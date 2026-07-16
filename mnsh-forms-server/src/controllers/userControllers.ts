@@ -1,6 +1,7 @@
 import pool from "../config/db";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt"
+import { jwtGen } from "../utils/jwtGenerator";
 
 export const signup = async (req: Request, res: Response) => {
   const { userName, email, password } = req.body
@@ -13,6 +14,13 @@ export const signup = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 7)
     const user = await pool.query("INSERT INTO users (userName, email, password) VALUES($1,$2,$3) RETURNING *", [userName, email, hashedPassword])
 
+    const token = jwtGen(user.rows[0])
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 365 * 24 * 60 * 60 * 1000
+    })
     return res.status(200).json({ message: "User Created Successfully", data: user.rows[0] })
 
   } catch (error) {
@@ -33,7 +41,12 @@ export const login = async (req: Request, res: Response) => {
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid password" })
     }
-
+    const token = jwtGen(getUser.rows[0])
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 365 * 24 * 60 * 60 * 1000
+    })
     return res.status(200).json({ message: "User Logged in successfully", data: getUser.rows[0] })
 
   } catch (error) {

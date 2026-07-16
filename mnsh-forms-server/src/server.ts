@@ -3,11 +3,13 @@ import dotenv from "dotenv"
 import morgan from "morgan"
 import pool from "./config/db"
 import userRouter from "./routes/userRoutes"
+import cookieParser from "cookie-parser"
 
 dotenv.config()
 const app = express()
 app.use(morgan("dev"))
 app.use(express.json())
+app.use(cookieParser())
 const port = process.env.PORT || 3000
 
 pool.connect()
