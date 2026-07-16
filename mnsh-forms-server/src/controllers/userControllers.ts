@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
       sameSite: 'lax',
       maxAge: 365 * 24 * 60 * 60 * 1000
     })
-    return res.status(200).json({ message: "User Logged in successfully", data: getUser.rows[0] })
+    return res.status(200).json({ message: "User Logged in successfully", data: getUser.rows[0], token })
 
   } catch (error) {
     console.log(error)
@@ -55,3 +55,7 @@ export const login = async (req: Request, res: Response) => {
   }
 }
 
+export const verifyMe = async (req: Request, res: Response) => {
+  const user = req.user.user
+  return res.status(200).json({ message: "User Authenticated Successfully", user })
+}
