@@ -1,63 +1,81 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
+import FloatingDots from "../components/Floating-BG/Floating";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [currentState, setCurrentState] = useState("login");
-  
+  const [result, setResult] = useState({ ok: false, message: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
+    event.preventDefault();
+    setLoading(true);
+    const formData = new FormData(event.currentTarget);
     const body = {
       email: formData.get("login-email"),
-      password: formData.get("login-password")
-    }
-    console.log(body)
+      password: formData.get("login-password"),
+    };
+    console.log(body);
 
     try {
       const response = await fetch("http://localhost:3000/user/login", {
-        method:"POST",
-        credentials:"include",
+        method: "POST",
+        credentials: "include",
         headers: {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         },
-        body: JSON.stringify(body)
-      })
-      const data = await response.json()
-      console.log(data)
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      console.log(data);
+      setResult({ ok: response.ok, message: data.message });
+      console.log(result);
+      if (response.ok) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+    setLoading(false);
+  };
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
+    event.preventDefault();
+    setLoading(true);
+    const formData = new FormData(event.currentTarget);
     const body = {
       userName: formData.get("signup-username"),
       email: formData.get("signup-email"),
-      password: formData.get("signup-password")
-    }
+      password: formData.get("signup-password"),
+    };
 
     try {
       const response = await fetch("http://localhost:3000/user/signup", {
-        method:"POST",
-        credentials:"include",
+        method: "POST",
+        credentials: "include",
         headers: {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         },
-        body: JSON.stringify(body)
-      })
-      const data = await response.json()
-      console.log(data)
-      console.log(response)
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      console.log(data);
+      setResult({ ok: response.ok, message: data.message });
+      console.log(result);
+      if (response.ok) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+    setLoading(false);
+  };
 
   return (
-    <div className="flex h-screen w-screen items-start justify-center pt-32 mb-10">
+    <div className="mb-10 flex h-screen w-screen items-start justify-center pt-32">
+      <FloatingDots count = {70} />
       <div className="bg-burnt-orange brutal-shadow brutal-border-sharp h- flex flex-col items-center justify-center px-15 py-7">
         <h2 className="font-heading text-5xl font-bold">Welcome</h2>
         <div className="brutal-border-sharp bg-cream flex flex-row">
@@ -99,12 +117,17 @@ const Auth = () => {
             id="login"
             className={
               currentState == "login"
-                ? "flex flex-col justify-center items-center"
+                ? "flex flex-col items-center justify-center"
                 : "hidden"
             }
           >
             <div className="flex flex-col items-start justify-center">
-              <label htmlFor="login-email" className="font-bold font-body text-lg">Email</label>
+              <label
+                htmlFor="login-email"
+                className="font-body text-lg font-bold"
+              >
+                Email
+              </label>
               <motion.input
                 type="email"
                 initial={{
@@ -114,11 +137,16 @@ const Auth = () => {
                 transition={{ type: "spring", stiffness: 700, damping: 50 }}
                 name="login-email"
                 id="login-email"
-                className="bg-cream brutal-border-slight brutal-shadow-accent font-body font-semibold mb-6 w-sm px-6 py-2 text-lg focus:outline-none"
+                className="bg-cream brutal-border-slight brutal-shadow-accent font-body mb-6 w-sm px-6 py-2 text-lg font-semibold focus:outline-none"
                 placeholder="example@gmail.com"
                 required
               />
-              <label htmlFor="login-password" className="font-bold font-body text-lg">Password</label>
+              <label
+                htmlFor="login-password"
+                className="font-body text-lg font-bold"
+              >
+                Password
+              </label>
               <motion.input
                 type="password"
                 initial={{
@@ -141,7 +169,19 @@ const Auth = () => {
               }}
               transition={{ duration: 0.15 }}
             >
-              Log In
+              {loading ? (
+                <motion.span
+                  className="border-ink inline-block h-5 w-5 rounded-full border-2 border-t-transparent"
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 0.8,
+                    ease: "linear",
+                  }}
+                ></motion.span>
+              ) : (
+                "Log In"
+              )}
             </motion.button>
           </form>
           <form
@@ -149,12 +189,17 @@ const Auth = () => {
             id="signup"
             className={
               currentState == "signup"
-                ? "flex flex-col justify-center items-center"
+                ? "flex flex-col items-center justify-center"
                 : "hidden"
             }
           >
             <div className="flex flex-col items-start justify-center">
-              <label htmlFor="signup-username" className="font-bold font-body text-lg">User Name</label>
+              <label
+                htmlFor="signup-username"
+                className="font-body text-lg font-bold"
+              >
+                User Name
+              </label>
               <motion.input
                 type="text"
                 initial={{
@@ -164,11 +209,16 @@ const Auth = () => {
                 transition={{ type: "spring", stiffness: 700, damping: 50 }}
                 name="signup-username"
                 id="signup-username"
-                className="bg-cream brutal-border-slight brutal-shadow-accent font-body font-semibold mb-6 w-sm px-6 py-2 text-lg focus:outline-none"
+                className="bg-cream brutal-border-slight brutal-shadow-accent font-body mb-6 w-sm px-6 py-2 text-lg font-semibold focus:outline-none"
                 placeholder="John Doe"
                 required
               />
-              <label htmlFor="signup-email" className="font-bold font-body text-lg">Email</label>
+              <label
+                htmlFor="signup-email"
+                className="font-body text-lg font-bold"
+              >
+                Email
+              </label>
               <motion.input
                 type="email"
                 initial={{
@@ -178,11 +228,16 @@ const Auth = () => {
                 transition={{ type: "spring", stiffness: 700, damping: 50 }}
                 name="signup-email"
                 id="signup-email"
-                className="bg-cream brutal-border-slight brutal-shadow-accent font-body font-semibold mb-6 w-sm px-6 py-2 text-lg focus:outline-none"
+                className="bg-cream brutal-border-slight brutal-shadow-accent font-body mb-6 w-sm px-6 py-2 text-lg font-semibold focus:outline-none"
                 placeholder="example@gmail.com"
                 required
               />
-              <label htmlFor="signup-password" className="font-bold font-body text-lg">Password</label>
+              <label
+                htmlFor="signup-password"
+                className="font-body text-lg font-bold"
+              >
+                Password
+              </label>
               <motion.input
                 type="password"
                 initial={{
@@ -205,10 +260,19 @@ const Auth = () => {
               }}
               transition={{ duration: 0.15 }}
             >
-              Sign Up 
-            </motion.button>            
+              Sign Up
+            </motion.button>
           </form>
         </div>
+        <p
+          className={
+            result.ok
+              ? "font-body text-xl font-bold text-green-800"
+              : "font-body text-xl font-bold text-red-800"
+          }
+        >
+          {result.message}
+        </p>
       </div>
     </div>
   );
