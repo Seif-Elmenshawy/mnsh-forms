@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import FloatingDots from "../components/Floating-BG/Floating";
@@ -74,6 +74,26 @@ const Auth = () => {
     }
     setLoading(false);
   };
+
+  const verify = async () => {
+    try {
+      const response = await fetch(`${server_url}/user/verify`, {
+        credentials:"include"
+      })
+      if (response.ok) {
+        navigate('/dashboard')
+      }
+      console.log(response)
+      const data = await response.json()
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    verify()
+  }, [])
 
   return (
     <div className="mb-10 flex h-screen w-screen items-start justify-center pt-32">

@@ -9,6 +9,6 @@ userRouter.get("/", (req: Request, res: Response) => {
 })
 userRouter.post("/signup", user.signup)
 userRouter.post("/login", user.login)
-userRouter.post("/verify", authenticate, user.verifyMe)
+userRouter.get("/verify", authenticate, user.verifyMe)
 
 export default userRouter
