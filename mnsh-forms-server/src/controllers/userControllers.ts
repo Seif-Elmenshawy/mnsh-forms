@@ -56,6 +56,6 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const verifyMe = async (req: Request, res: Response) => {
-  const user = req.user.user
+  const user = req.user?.user
   return res.status(200).json({ message: "User Authenticated Successfully", user })
 }

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import pool from "../config/db";
 
 export const createForm = async (req: Request, res: Response) => {
-  const userId = req.user.user.id;
+  const userId = req.user?.user.id;
   const { formTitle, description, questions } = req.body;
   
   const client = await pool.connect()
@@ -40,7 +40,7 @@ export const createForm = async (req: Request, res: Response) => {
 };
 
 export const fetchForms = async (req: Request, res: Response) => {
-  const userId = req.user.user.id
+  const userId = req.user?.user.id
   
   try {
     const forms = await pool.query(`SELECT * FROM forms WHERE user_id = $1`, [userId])
