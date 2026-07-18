@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import FloatingDots from "../components/Floating-BG/Floating";
 
+const server_url = import.meta.env.VITE_SERVER_API
+
 const Auth = () => {
   const navigate = useNavigate();
   const [currentState, setCurrentState] = useState("login");
@@ -20,7 +22,7 @@ const Auth = () => {
     console.log(body);
 
     try {
-      const response = await fetch("http://localhost:3000/user/login", {
+      const response = await fetch(`${server_url}/user/login`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -52,7 +54,7 @@ const Auth = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/user/signup", {
+      const response = await fetch(`${server_url}/user/signup`, {
         method: "POST",
         credentials: "include",
         headers: {
