@@ -1,12 +1,14 @@
-import { Pool } from "pg"
+import { Pool } from "pg";
+import dotenv from "dotenv";
 
+dotenv.config();
 
 const pool = new Pool({
-  host: "localhost",
-  user: "postgres",
-  password: "13245",
-  database: "mnsh_forms",
-  port: 5432,
-})
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: Number(process.env.DB_PORT),
+});
 
-export default pool
+export default pool;

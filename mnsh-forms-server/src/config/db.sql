@@ -9,7 +9,7 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE form (
+CREATE TABLE forms (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   form_title TEXT NOT NULL,
   form_description TEXT,
@@ -25,5 +25,14 @@ CREATE TABLE questions(
   question_title TEXT NOT NULL,
   question_description TEXT,
   question_type VARCHAR(255) NOT NULL,
-  form_id UUID REFERENCES form(id) ON DELETE CASCADE
+  question_order INTEGER NOT NULL,
+  is_required BOOLEAN NOT NULL,
+  form_id UUID REFERENCES forms(id) ON DELETE CASCADE
+);
+
+CREATE TABLE choices(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  choice_title TEXT NOT NULL,
+  choice_order INTEGER NOT NULL,
+  question_id UUID REFERENCES questions(id) ON DELETE CASCADE
 );
