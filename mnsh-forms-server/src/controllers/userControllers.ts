@@ -18,7 +18,8 @@ export const signup = async (req: Request, res: Response) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "none",
+      secure:true,
       maxAge: 365 * 24 * 60 * 60 * 1000
     })
     return res.status(200).json({ message: "User Created Successfully", data: user.rows[0] })
@@ -44,7 +45,8 @@ export const login = async (req: Request, res: Response) => {
     const token = jwtGen(getUser.rows[0])
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      secure:true,
       maxAge: 365 * 24 * 60 * 60 * 1000
     })
     return res.status(200).json({ message: "User Logged in successfully", data: getUser.rows[0], token })

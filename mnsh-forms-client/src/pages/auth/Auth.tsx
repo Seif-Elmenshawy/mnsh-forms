@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "motion/react";
-import { useNavigate } from "react-router-dom";
-import FloatingDots from "../components/Floating-BG/Floating";
+import React, { useEffect, useState } from "react"
+import { motion } from "motion/react"
+import { useNavigate } from "react-router-dom"
+import FloatingDots from "../components/Floating-BG/Floating"
 
 const server_url = import.meta.env.VITE_SERVER_API
 
 const Auth = () => {
-  const navigate = useNavigate();
-  const [currentState, setCurrentState] = useState("login");
-  const [result, setResult] = useState({ ok: false, message: "" });
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const [currentState, setCurrentState] = useState("login")
+  const [result, setResult] = useState({ ok: false, message: "" })
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-    const formData = new FormData(event.currentTarget);
+    event.preventDefault()
+    setLoading(true)
+    const formData = new FormData(event.currentTarget)
     const body = {
       email: formData.get("login-email"),
       password: formData.get("login-password"),
     };
-    console.log(body);
+    console.log(body)
 
     try {
       const response = await fetch(`${server_url}/user/login`, {
@@ -29,29 +29,29 @@ const Auth = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      console.log(data);
-      setResult({ ok: response.ok, message: data.message });
-      console.log(result);
+      })
+      const data = await response.json()
+      console.log(data)
+      setResult({ ok: response.ok, message: data.message })
+      console.log(result)
       if (response.ok) {
-        navigate("/dashboard");
+        navigate("/dashboard")
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-    const formData = new FormData(event.currentTarget);
+    event.preventDefault()
+    setLoading(true)
+    const formData = new FormData(event.currentTarget)
     const body = {
       userName: formData.get("signup-username"),
       email: formData.get("signup-email"),
       password: formData.get("signup-password"),
-    };
+    }
 
     try {
       const response = await fetch(`${server_url}/user/signup`, {
@@ -61,18 +61,18 @@ const Auth = () => {
           "Content-type": "application/json",
         },
         body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      console.log(data);
-      setResult({ ok: response.ok, message: data.message });
-      console.log(result);
+      })
+      const data = await response.json()
+      console.log(data)
+      setResult({ ok: response.ok, message: data.message })
+      console.log(result)
       if (response.ok) {
-        navigate("/dashboard");
+        navigate("/dashboard")
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-    setLoading(false);
+    setLoading(false)
   };
 
   const verify = async () => {
@@ -297,7 +297,7 @@ const Auth = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Auth;
+export default Auth

@@ -1,12 +1,12 @@
-import logo from "../../../assets/Logo.png";
-import { Link } from "react-router-dom";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import { motion } from "motion/react";
+import logo from "../../../assets/Logo.png"
+import { Link } from "react-router-dom"
+import { PlusIcon } from "@heroicons/react/24/outline"
+import { motion } from "motion/react"
 
-const MotionLink = motion.create(Link);
+const MotionLink = motion.create(Link)
 
 interface prop {
-  current: string;
+  current: string
 }
 
 const Nav = ({ current }: prop) => {
@@ -39,4 +39,4 @@ const Nav = ({ current }: prop) => {
   );
 };
 
-export default Nav;
+export default Nav
