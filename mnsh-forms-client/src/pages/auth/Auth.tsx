@@ -75,7 +75,7 @@ const Auth = () => {
 
   return (
     <div className="mb-10 flex h-screen w-screen items-start justify-center pt-32">
-      <FloatingDots count = {70} />
+      <FloatingDots count = {150} />
       <div className="bg-burnt-orange brutal-shadow brutal-border-sharp h- flex flex-col items-center justify-center px-15 py-7">
         <h2 className="font-heading text-5xl font-bold">Welcome</h2>
         <div className="brutal-border-sharp bg-cream flex flex-row">

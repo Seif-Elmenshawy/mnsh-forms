@@ -5,7 +5,25 @@ CREATE TABLE users (
   userName VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   password  VARCHAR(255) NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE form (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  form_title TEXT NOT NULL,
+  form_description TEXT,
+  is_published BOOLEAN NOT NULL DEFAULT FALSE,
+  is_private BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE questions(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  question_title TEXT NOT NULL,
+  question_description TEXT,
+  question_type VARCHAR(255) NOT NULL,
+  form_id UUID REFERENCES form(id) ON DELETE CASCADE
+);

@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import morgan from "morgan"
 import pool from "./config/db"
 import userRouter from "./routes/userRoutes"
+import formRouter from "./routes/formRoutes"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -33,3 +34,4 @@ app.get("/", (req: Request, res: Response) => {
 
 //routes
 app.use("/user", userRouter)
+app.use("/form", formRouter)

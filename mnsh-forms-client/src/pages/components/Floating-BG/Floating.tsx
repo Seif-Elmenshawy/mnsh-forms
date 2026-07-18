@@ -19,7 +19,7 @@ function FloatingDots({ count = 30 }: { count?: number }) {
       {dots.map((dot) => (
         <motion.div
           key={dot.id}
-          className="bg-maroon absolute rounded-full"
+          className="bg-ink absolute rounded-full"
           style={{
             top: dot.top,
             left: dot.left,
