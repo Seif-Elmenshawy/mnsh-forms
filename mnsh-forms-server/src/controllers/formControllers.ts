@@ -2,8 +2,23 @@ import { Request, Response } from "express";
 import pool from "../config/db";
 
 export const createForm = async (req: Request, res: Response) => {
+  const userId = req.user?.user.id
+
+  try {
+    const form = await pool.query("INSERT INTO forms(user_id) VALUES($1) RETURNING *", [userId])
+    const updatedStats = await pool.query("UPDATE stats SET forms_created = forms_created + 1 WHERE user_id = $1", [userId])
+    console.log(form.rows[0])
+    return res.status(201).json({message: "Form Created", data: form.rows[0]})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message:"Internal Server Error"})
+  }
+}
+
+export const editForm = async (req: Request, res: Response) => {
   const userId = req.user?.user.id;
-  const { formTitle, description, questions } = req.body;
+  const { formTitle, isPublished, isPrivate, questions } = req.body;
+  const formId = req.params.id
   
   const client = await pool.connect()
 
@@ -11,8 +26,8 @@ export const createForm = async (req: Request, res: Response) => {
     await client.query("BEGIN");
 
     const form = await client.query(
-      `INSERT INTO forms(form_title, form_description, user_id) VALUES ($1, $2, $3) RETURNING *`,
-      [formTitle, description, userId],
+      `UPDATE forms SET formTitle = $1, is_published = $2, is_private = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4`,
+      [formTitle, isPublished, isPrivate, formId],
     );
 
     for (const [questionIndex, question] of questions.entries()) {

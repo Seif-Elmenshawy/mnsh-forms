@@ -13,7 +13,7 @@ export const signup = async (req: Request, res: Response) => {
     }
     const hashedPassword = await bcrypt.hash(password, 7)
     const user = await pool.query("INSERT INTO users (userName, email, password) VALUES($1,$2,$3) RETURNING *", [userName, email, hashedPassword])
-
+    const stats = await pool.query("INSERT INTO stats(user_id) VALUES($1) RETURNING *", [user.rows[0].id])
     const token = jwtGen(user.rows[0])
 
     res.cookie("token", token, {
@@ -60,4 +60,17 @@ export const login = async (req: Request, res: Response) => {
 export const verifyMe = async (req: Request, res: Response) => {
   const user = req.user?.user
   return res.status(200).json({ message: "User Authenticated Successfully", user })
+}
+
+export const dashboardData = async (req: Request, res: Response) => {
+  const userId = req.user?.user.id
+  try {
+    const forms = await pool.query("SELECT * FROM forms WHERE user_id = $1", [userId])
+    const stats = await pool.query("SELECT * FROM stats WHERE user_id = $1", [userId])
+
+    return res.status(200).json({message:"Dashboard Data loaded successully", forms: forms.rows, stats: stats.rows})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message: "Internal Server Error"})
+  }
 }
