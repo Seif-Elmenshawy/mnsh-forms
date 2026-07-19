@@ -25,11 +25,15 @@
   .brutal-border-heavy{
     border:8px solid var(--color-ink)
   }
+  .brutal-border-accent {
+    border: 4px solid var(--color-maroon);
+    border-radius: 0
+  }
   .brutal-shadow {
     box-shadow: 5px 5px 0 var(--color-ink);
   }
   .brutal-shadow-accent{
-    box-shadow:  5px 5px 0 var(--color-tomato);
+    box-shadow:  5px 5px 0 var(--color-maroon);
   }
   .brutal-shadow-nav{
     box-shadow: 9px 9px 0 var(--color-ink);

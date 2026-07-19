@@ -13,7 +13,7 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-  origin: ["http://localhost:5173", "https://mnsh-forms-omega.vercel.app"],
+  origin: ["http://localhost:5173", "http://localhost:4173", "https://mnsh-forms-omega.vercel.app"],
   credentials:true
 }))
 const port = process.env.PORT || 3000
@@ -33,4 +33,4 @@ app.get("/", (req: Request, res: Response) => {
 
 //routes
 app.use("/user", userRouter)
-app.use("/form", formRouter)
+app.use("/forms", formRouter)
