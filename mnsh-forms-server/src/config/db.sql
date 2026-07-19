@@ -9,6 +9,8 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
 CREATE TABLE forms (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   form_title TEXT NOT NULL,
