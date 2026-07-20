@@ -50,7 +50,7 @@ const Nav = ({ current }: prop) => {
           }}
           transition={{ duration: 0.15 }}
           onClick={handleFormCreation}
-          className="brutal-border-sharp bg-maroon text-cream flex w-fit flex-row items-center justify-center gap-2.5 px-5 py-3"
+          className="brutal-border-sharp bg-maroon text-cream flex w-fit flex-row items-center justify-center gap-2.5 px-5 py-3 cursor-pointer"
         >
           Create <PlusIcon className="h-6 w-6" />
         </motion.button>

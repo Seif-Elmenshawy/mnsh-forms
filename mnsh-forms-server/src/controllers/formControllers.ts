@@ -15,7 +15,7 @@ export const createForm = async (req: Request, res: Response) => {
   }
 }
 
-export const editForm = async (req: Request, res: Response) => {
+export const saveForm = async (req: Request, res: Response) => {
   const userId = req.user?.user.id;
   const { formTitle, isPublished, isPrivate, questions } = req.body;
   const formId = req.params.id
@@ -32,16 +32,9 @@ export const editForm = async (req: Request, res: Response) => {
 
     for (const [questionIndex, question] of questions.entries()) {
       const createdQuestion = await client.query(
-        `INSERT INTO questions(question_title, question_description, question_type, question_order, is_required, form_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [question.title, question.description, question.type, questionIndex, question.isRequired, form.rows[0].id],
+        `INSERT INTO questions(question_title, question_description, question_type, question_order, is_required, choices, form_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [question.title, question.description, question.type, questionIndex, question.isRequired, question.choices, form.rows[0].id],
       );
-
-      for (const [choiceIndex, choice] of (question.choices ?? []).entries()) {
-        await client.query(
-          `INSERT INTO choices(choice_title, choice_order, question_id) VALUES($1, $2, $3) RETURNING *`,
-          [choice.title, choiceIndex, createdQuestion.rows[0].id],
-        );
-      }
     }
     console.log(form.rows[0]);
 
@@ -54,12 +47,13 @@ export const editForm = async (req: Request, res: Response) => {
   }
 };
 
-export const fetchForms = async (req: Request, res: Response) => {
-  const userId = req.user?.user.id
-  
+export const getFormData = async (req: Request, res: Response) => {
+  const formId = req.params.id 
   try {
-    const forms = await pool.query(`SELECT * FROM forms WHERE user_id = $1`, [userId])
-    return res.status(200).json({message: "Forms Fetched Successfully", data: forms.rows})
+    const formData = await pool.query(`SELECT * FROM forms WHERE id = $1`, [formId])
+    const formquestions = await pool.query(`SELECT * FROM questions WHERE form_id = $1`, [formId])
+  
+    return res.status(200).json({message: "form data retrieved successfully", data: formData.rows[0], questions: formquestions.rows})
   } catch (error) {
     console.log(error)
     return res.status(500).json({message: "Internal Server Error"})

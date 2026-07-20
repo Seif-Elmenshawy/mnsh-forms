@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FloatingDots from "../components/Floating-BG/Floating";
 import Nav from "../components/Nav/Nav";
 import { motion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MotionLink = motion.create(Link);
 const serverUrl = import.meta.env.VITE_SERVER_API;
@@ -19,6 +19,7 @@ interface FormItem {
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     createdForms: 10,
     responses: 234,
@@ -33,13 +34,19 @@ const Dashboard = () => {
       });
       const data = await response.json();
       console.log(data);
-      setStats({
-        createdForms: data.stats[0].forms_created,
-        responses: data.stats[0].responses,
-        respondedTo: data.stats[0].responded_to,
-      });
-      setForms(data.forms);
-      console.log(forms);
+      switch (response.status) {
+        case 200:
+          setStats({
+            createdForms: data.stats[0].forms_created,
+            responses: data.stats[0].responses,
+            respondedTo: data.stats[0].responded_to,
+          });
+          setForms(data.forms);
+          console.log(forms);
+          break;
+        case 401:
+          navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -110,15 +117,15 @@ const Dashboard = () => {
             <MotionLink
               to={`/forms/${form.id}/edit`}
               whileHover={{
-                x:-4,
-                y:-4
+                x: -4,
+                y: -4,
               }}
               whileTap={{
-                x:4,
-                y:4
+                x: 4,
+                y: 4,
               }}
-              transition={{duration:0.15}}
-              className="bg-coral-pink text-ink brutal-shadow-accent brutal-border-accent flex w-full flex-row items-center justify-between px-3 py-5 my-2.5"
+              transition={{ duration: 0.15 }}
+              className="bg-coral-pink text-ink brutal-shadow-accent brutal-border-accent my-2.5 flex w-full flex-row items-center justify-between px-3 py-5"
             >
               <h1 className="font-body text-2xl font-bold">
                 {form.form_title}

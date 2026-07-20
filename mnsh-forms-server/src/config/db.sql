@@ -35,12 +35,13 @@ CREATE TABLE questions(
   question_type VARCHAR(255) NOT NULL,
   question_order INTEGER NOT NULL,
   is_required BOOLEAN NOT NULL,
+  choices TEXT[] 
   form_id UUID REFERENCES forms(id) ON DELETE CASCADE
 );
 
-CREATE TABLE choices(
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  choice_title TEXT NOT NULL,
-  choice_order INTEGER NOT NULL,
-  question_id UUID REFERENCES questions(id) ON DELETE CASCADE
-);
+-- CREATE TABLE choices(
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   choice_title TEXT NOT NULL,
+--   choice_order INTEGER NOT NULL,
+--   question_id UUID REFERENCES questions(id) ON DELETE CASCADE
+-- );
