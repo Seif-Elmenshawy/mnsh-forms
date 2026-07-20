@@ -4,6 +4,7 @@ import logo from "../../assets/Logo.png";
 import { motion } from "motion/react";
 import FloatingDots from "../components/Floating-BG/Floating";
 import * as Switch from "@radix-ui/react-switch";
+import { div } from "motion/react-client";
 
 const serverUrl = import.meta.env.VITE_SERVER_API;
 
@@ -18,9 +19,20 @@ interface FormItem {
   user_id: string;
 }
 
+interface Question {
+  id: string | null;
+  question_title: string;
+  question_description: string | null;
+  question_type: string;
+  question_order: number;
+  is_required: boolean;
+  choices: [] | null;
+  form_id: string;
+}
+
 const Edit = () => {
   const [formData, setFormData] = useState<FormItem>();
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const params = useParams();
   const formId = params.id;
   const navigate = useNavigate();
@@ -47,13 +59,30 @@ const Edit = () => {
     }
   };
 
+  const addQuestion = () => {
+    if (!formId) return;
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        question_title: "Untitled Question",
+        question_description: null,
+        question_order: prev.length,
+        question_type: "short",
+        is_required: true,
+        choices: null,
+        form_id: formId,
+      },
+    ]);
+  };
+
   useEffect(() => {
     fetchFormData();
   }, []);
   return (
     <div>
       <FloatingDots count={120} />
-      <header className="bg-maroon brutal-shadow brutal-border-sharp text-cream mx-3 my-3 flex w-[calc(100%-1.5rem)] flex-row items-center justify-between px-2.5 py-3.5">
+      <header className="bg-maroon brutal-shadow brutal-border-sharp text-cream mx-3 mt-3 flex w-[calc(100%-1.5rem)] flex-row items-center justify-between px-2.5 py-3.5">
         <div className="flex flex-row items-center justify-center gap-5">
           <img className="h-20 w-20" src={logo} />
           <motion.input
@@ -111,16 +140,55 @@ const Edit = () => {
         </div>
       </header>
 
-      <section className="bg-burnt-orange brutal-shadow-nav brutal-border-heavy mx-3 my-3 flex w-[calc(100%-1.5rem)] flex-col items-start justify-center px-5 py-7">
+      <section className="bg-burnt-orange brutal-shadow-nav brutal-border-heavy mx-3 mt-10 flex w-[calc(100%-1.5rem)] flex-col items-start justify-center px-5 py-7">
         <h1 className="font-heading text-3xl font-bold">Work Area</h1>
         {questions.length === 0 ? (
-          <div className="flex flex-col justify-center items-center w-full">
-            <p className="font-semibold font-body ">There a no questions yet</p>
-            
+          <div className="flex w-full flex-col items-center justify-center">
+            <p className="font-body font-semibold">There a no questions yet</p>
+            <motion.button
+              whileTap={{
+                x: 4,
+                y: 4,
+              }}
+              transition={{ duration: 0.15 }}
+              onClick={addQuestion}
+              className="bg-tomato font-body brutal-border-sharp brutal-shadow w-37 cursor-pointer px-2 py-2.5 font-bold text-wrap"
+            >
+              Add your first Question
+            </motion.button>
           </div>
         ) : (
-          <div>
-            <p>you have {questions.length} questions</p>
+          <div className="mt-10 flex w-full flex-col items-center justify-center gap-10">
+            {questions.map((question) => (
+              <div
+                key={question.id}
+                className="bg-maroon brutal-border-sharp brutal-shadow w-4/5 px-3 py-4"
+              >
+                <motion.input
+                  initial={{
+                    border: "0 solid #111111",
+                    color: "#FFFFFF",
+                  }}
+                  whileFocus={{
+                    border: "4px solid #111111",
+                    backgroundColor: "#FF8FA3",
+                    color: "#111111",
+                  }}
+                  transition={{ duration: 0.15 }}
+                  className="font-heading text-cream field-sizing-content px-1.5 py-2 text-3xl font-bold focus:outline-0"
+                  value={question.question_title ?? ""}
+                  onChange={(e) =>
+                    setQuestions((prev) =>
+                      prev.map((q) =>
+                        q.id == question.id
+                          ? { ...q, question_title: e.target.value }
+                          : q,
+                      ),
+                    )
+                  }
+                />
+              </div>
+            ))}
           </div>
         )}
       </section>
