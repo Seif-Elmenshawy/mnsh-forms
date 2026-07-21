@@ -4,7 +4,8 @@ import logo from "../../assets/Logo.png";
 import { motion } from "motion/react";
 import FloatingDots from "../components/Floating-BG/Floating";
 import * as Switch from "@radix-ui/react-switch";
-import { div } from "motion/react-client";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, DocumentDuplicateIcon } from "@heroicons/react/24/solid";
 
 const serverUrl = import.meta.env.VITE_SERVER_API;
 
@@ -137,6 +138,20 @@ const Edit = () => {
               </Switch.Root>
             </div>
           </div>
+          <motion.button
+            initial={{
+              boxShadow: "4px 4px 0px #111111",
+            }}
+            whileTap={{
+              boxShadow: "0px 0px 0px #111111",
+              x: 4,
+              y: 4,
+            }}
+            transition={{ duration: 0.11 }}
+            className="bg-tomato brutal-border-sharp px-2 py-3"
+          >
+            Save changes
+          </motion.button>
         </div>
       </header>
 
@@ -162,31 +177,93 @@ const Edit = () => {
             {questions.map((question) => (
               <div
                 key={question.id}
-                className="bg-maroon brutal-border-sharp brutal-shadow w-4/5 px-3 py-4"
+                className="bg-maroon brutal-border-sharp brutal-shadow text-cream flex w-1/2 flex-col items-start justify-center px-3 py-4"
               >
+                <div className="flex w-full flex-row items-center justify-between">
+                  <motion.input
+                    initial={{
+                      border: "0 solid #111111",
+                      color: "#FFFFFF",
+                    }}
+                    whileFocus={{
+                      border: "4px solid #111111",
+                      backgroundColor: "#FF8FA3",
+                      color: "#111111",
+                    }}
+                    transition={{ duration: 0.15 }}
+                    className="font-heading text-cream field-sizing-content px-1.5 py-2 text-3xl font-bold focus:outline-0"
+                    value={question.question_title ?? ""}
+                    onChange={(e) =>
+                      setQuestions((prev) =>
+                        prev.map((q) =>
+                          q.id == question.id
+                            ? { ...q, question_title: e.target.value }
+                            : q,
+                        ),
+                      )
+                    }
+                  />
+                  <div className="relative">
+                    <select
+                      className="brutal-border-slight bg-burnt-orange text-3xs font-body w-full appearance-none px-4 py-2 pr-10 text-sm font-bold text-gray-900 shadow-sm focus:outline-none"
+                      value={question.question_type}
+                      onChange={(e) =>
+                        setQuestions((prev) =>
+                          prev.map((q) =>
+                            q.id == question.id
+                              ? { ...q, question_type: e.target.value }
+                              : q,
+                          ),
+                        )
+                      }
+                    >
+                      <option value="short">
+                        Short Text <ChevronDownIcon className="text-ink w-3" />
+                      </option>
+                      <option value="paragraph">Paragraph</option>
+                      <option value="check">Checkboxes</option>
+                      <option value="multipleChoice">Multiple Choice</option>
+                    </select>
+                    <ChevronDownIcon className="text-ink pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" />
+                  </div>
+                </div>
                 <motion.input
-                  initial={{
-                    border: "0 solid #111111",
-                    color: "#FFFFFF",
-                  }}
-                  whileFocus={{
-                    border: "4px solid #111111",
-                    backgroundColor: "#FF8FA3",
-                    color: "#111111",
-                  }}
-                  transition={{ duration: 0.15 }}
-                  className="font-heading text-cream field-sizing-content px-1.5 py-2 text-3xl font-bold focus:outline-0"
-                  value={question.question_title ?? ""}
-                  onChange={(e) =>
-                    setQuestions((prev) =>
-                      prev.map((q) =>
-                        q.id == question.id
-                          ? { ...q, question_title: e.target.value }
-                          : q,
-                      ),
-                    )
-                  }
+                  type="text"
+                  placeholder="ex. What is your name?"
+                  className="bg-burnt-orange font-body brutal-border-sharp brutal-shadow text-ink m-1.5 w-80 px-2 py-3 font-bold focus:outline-none"
                 />
+                <div className="flex w-full items-center justify-center">
+                  <hr className="text-cream m-2 w-full" />
+                </div>
+                <div className="flex w-full flex-row items-center justify-between">
+                  <motion.div
+                    className="w-1/15"
+                    whileTap={{
+                      scale: 0.9,
+                    }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <TrashIcon className="w-full" />
+                  </motion.div>
+                  <motion.div
+                    className="w-1/15"
+                    whileTap={{
+                      x: -3,
+                      y: 3,
+                    }}
+                    transition={{ duration: 0.1 }}
+                  >
+                    <DocumentDuplicateIcon className="w-full" />
+                  </motion.div>
+                  <div className="flex flex-row gap-4">
+                    <p className="font-body font-bold">Required</p>
+                    <Switch.Root
+                      className="data-[state=checked]:bg-burnt-orange relative h-6 w-11 rounded-full bg-gray-300 transition-colors"
+                    >
+                      <Switch.Thumb className="block h-4 w-4 translate-x-1 rounded-full bg-white transition-transform data-[state=checked]:translate-x-6" />
+                    </Switch.Root>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
